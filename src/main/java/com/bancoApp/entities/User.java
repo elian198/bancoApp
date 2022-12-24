@@ -17,6 +17,8 @@ public class User {
     private String name;
     private String lastName;
 
+    private String password;
+
     @Column(name = "EMAIL" , unique = true)
     private String email;
 
@@ -87,6 +89,14 @@ public class User {
 
     public Set<Account> getAccounts() {
         return accounts;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setAccounts(Set<Account> accounts) {
