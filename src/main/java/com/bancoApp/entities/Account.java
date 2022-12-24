@@ -1,6 +1,7 @@
 package com.bancoApp.entities;
 
 import com.bancoApp.entities.enums.AccountType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -15,14 +16,17 @@ public class Account {
     @Column(name = "ACCOUNT_TYPE")
     private AccountType accountType;
 
+    @JsonIgnore
     @ManyToOne
     private User user;
 
     public Account() { }
 
 
-    public Account(AccountType accountType) {
+    public Account(AccountType accountType, User user) {
+
         this.accountType = accountType;
+        this.user = user;
     }
 
     public Long getId() {
@@ -33,6 +37,7 @@ public class Account {
         this.id = id;
     }
 
+
     public AccountType getAccountType() {
         return accountType;
     }
@@ -41,11 +46,20 @@ public class Account {
         this.accountType = accountType;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
                 ", accountType=" + accountType +
+                ", user=" + user +
                 '}';
     }
 }

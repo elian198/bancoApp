@@ -53,15 +53,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);
 
-        if (user.getEmail().split("@")[1].equals("admin.edu")) {
-            role.setDescription(Description.ADMIN);
-            roleSet.add(role);
-        }
         Set<Account> accounts = new HashSet<>();
-        Account pesos = new Account(AccountType.PESOS);
-        Account dollar = new Account(AccountType.DOLLAR);
+        Account pesos = new Account(AccountType.PESOS, user);
+        Account dollar = new Account(AccountType.DOLLAR, user);
         accounts.add(pesos);
         accounts.add(dollar);
+
+        if (user.getEmail().split("@")[1].equals("admin.edu")) {
+            Role admin = new Role();
+            admin.setDescription(Description.ADMIN);
+            roleSet.add(admin);
+        }
+
+        user.setRoles(roleSet);
+        user.setAccounts(accounts);
 
      userRepository.save(user);
 
@@ -77,17 +82,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User findByEmail(String email) {
-        if(userRepository.findByEmail(email) == null){
-            throw new EmailAlreadyExistException("El email no existe!!");
-        }
+        System.out.println(userRepository.findByEmail(email));
         return userRepository.findByEmail(email);
     }
 
     @Override
     public User findByUserName(String name) {
-        if(userRepository.findByUserName(name)== null ){
-            throw new UserNameAlreadyExistsException("El usuario que ingreso no existe");
-        }
         return userRepository.findByUserName(name);
     }
 
