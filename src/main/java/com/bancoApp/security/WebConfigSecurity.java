@@ -51,7 +51,7 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/users").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
 
                 .anyRequest().authenticated();
 

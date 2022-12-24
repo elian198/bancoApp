@@ -7,6 +7,7 @@ import com.bancoApp.security.jwt.JwtTokenUtil;
 import com.bancoApp.security.payload.LoginPayload;
 import com.bancoApp.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,7 +49,7 @@ public class UserController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtTokenUtil.generateJwtToken(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserDetails  userDetails = (UserDetails) authentication.getPrincipal();
         return ResponseEntity.ok(new AuthTokenDto(token));
     }
 
@@ -60,6 +61,11 @@ public class UserController {
         if(userService.findByEmail(user.getEmail()) != null){
             return ResponseEntity.badRequest().body("El Email ya existe");
         }
+
+        if(userService.findByPhone(user.getPhone()) != null){
+            return ResponseEntity.badRequest().body("El telefono ya existe!!");
+        }
+
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
         userService.save(user);
@@ -67,14 +73,7 @@ public class UserController {
         return ResponseEntity.ok("Usuario creado");
     }
 
-    @GetMapping("/users")
-    public List<User> findAll(){
-        return userService.findAll();
-    }
 
-    @PostMapping("/users/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id){
 
-        return ResponseEntity.ok(userService.findById(id));
-    }
+
 }

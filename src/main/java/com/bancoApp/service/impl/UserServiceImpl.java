@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User findByPhone(Integer phone)  throws PhoneNoExist{
         if(userRepository.findByPhone(phone) == null){
-        throw  new PhoneNoExist("El numero ingresado no existe");
+        //throw  new PhoneNoExist("El numero ingresado no existe");
         }
         return userRepository.findByPhone(phone);
     }
