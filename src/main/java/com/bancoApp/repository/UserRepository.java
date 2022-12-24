@@ -7,10 +7,13 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query(value = "SELECT * FROM user WHERE user.email = :filtro" ,nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE users.email = :filtro" ,nativeQuery = true)
     User findByEmail(@Param("filtro") String filtro);
 
-    @Query(value = "SELECT * FROM user WHERE user.name = :filtro" ,nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE users.name = :filtro" ,nativeQuery = true)
     User findByUserName(@Param("filtro") String filtro);
+
+    @Query(value = "SELECT * FROM users WHERE users.phone = :filtro" ,nativeQuery = true)
+    User findByPhone(@Param("filtro") Integer filtro);
 
 }
