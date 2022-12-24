@@ -13,6 +13,12 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "ALIAS")
+    private String alias;
+
+    @Column(name = "SALDO")
+    private Double saldo;
+
     @Column(name = "ACCOUNT_TYPE")
     private AccountType accountType;
 
@@ -54,10 +60,28 @@ public class Account {
         this.user = user;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public Double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Double saldo) {
+        this.saldo = saldo;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
+                ", alias='" + alias + '\'' +
+                ", saldo=" + saldo +
                 ", accountType=" + accountType +
                 ", user=" + user +
                 '}';

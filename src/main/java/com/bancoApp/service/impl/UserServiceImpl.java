@@ -56,6 +56,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Set<Account> accounts = new HashSet<>();
         Account pesos = new Account(AccountType.PESOS, user);
         Account dollar = new Account(AccountType.DOLLAR, user);
+        pesos.setAlias(user.getName() + "." + user.getLastName());
+        pesos.setSaldo(10000.0);
+        dollar.setSaldo(200.0);
         accounts.add(pesos);
         accounts.add(dollar);
 
