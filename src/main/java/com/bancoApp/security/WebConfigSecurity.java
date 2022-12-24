@@ -1,5 +1,7 @@
 package com.bancoApp.security;
 
+import com.bancoApp.security.jwt.JwtAuthEntryPoint;
+import com.bancoApp.security.jwt.JwtRequestFilter;
 import com.bancoApp.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,6 +32,15 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserServiceImpl userService;
 
+    @Autowired
+    private JwtAuthEntryPoint unauthorizedHandler;
+
+    // ================ CREACIÓN DE BEANS ======================
+    @Bean
+    public JwtRequestFilter authenticationJwtTokenFilter() {
+        return new JwtRequestFilter();
+    }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -39,7 +51,12 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/login").permitAll()
+                .antMatchers("/users").hasRole("ADMIN")
+
                 .anyRequest().authenticated();
+
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Override
