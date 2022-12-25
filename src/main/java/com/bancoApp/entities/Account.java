@@ -4,6 +4,8 @@ import com.bancoApp.entities.enums.AccountType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "ACCOUNTS")
@@ -21,6 +23,15 @@ public class Account {
 
     @Column(name = "ACCOUNT_TYPE")
     private AccountType accountType;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "ACCOUNT_CARD",
+            joinColumns = {
+                    @JoinColumn(name = "ID")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "CARD_ID") })
+    private Set<Card> cards = new HashSet<>();
 
     @JsonIgnore
     @ManyToOne
@@ -72,6 +83,14 @@ public class Account {
         return saldo;
     }
 
+    public Set<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(Set<Card> cards) {
+        this.cards = cards;
+    }
+
     public void setSaldo(Double saldo) {
         this.saldo = saldo;
     }
@@ -83,6 +102,7 @@ public class Account {
                 ", alias='" + alias + '\'' +
                 ", saldo=" + saldo +
                 ", accountType=" + accountType +
+                ", cards=" + cards +
                 ", user=" + user +
                 '}';
     }
