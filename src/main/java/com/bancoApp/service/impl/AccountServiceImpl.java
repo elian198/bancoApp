@@ -58,9 +58,8 @@ public class AccountServiceImpl implements AccountService {
         }
          User user = userService.findByUserName(name);
 
-          for (Account list : user.getAccounts()) {
-              if (list.getAccountType().equals(AccountType.PESOS)) {
-                  Account account = accountRepository.findById(list.getId()).get();
+                  Long accountpesos = findPesosAccount(user.getIdUser());
+                  Account account = accountRepository.findById(accountpesos).get();
                   Double oldSaldo = account.getSaldo();
                   Account accountSender = accountRepository.findById(idSender).get();
                   if (account.getSaldo() > saldo && saldo < 10000.0) {
@@ -70,15 +69,23 @@ public class AccountServiceImpl implements AccountService {
                       double total = account.getSaldo() - saldo;
                       account.setSaldo(total);
                       accountRepository.save(account);
-                      Account accountTrans = accountRepository.findById(list.getId()).get();
+                      Account accountTrans = accountRepository.findById(accountpesos).get();
 
-                     Transfer transfer = new Transfer(list.getId(), accountSender.getId(), saldo,"TRASFERENCIA"
+                     Transfer transfer = new Transfer(accountpesos, accountSender.getId(), saldo,"TRASFERENCIA"
                               , LocalDateTime.now(),account.getAlias(), accountSender.getAlias(),
                              oldSaldo, accountTrans.getSaldo());
                       transferRepository.save(transfer);
                   }
               }
-          }
+
+
+    public Long findPesosAccount(Long id){
+        for(Account list : userService.findById(id).getAccounts()){
+            if(list.getAccountType().equals(AccountType.PESOS)){
+                return list.getId();
+            }
+        }
+        return  null;
     }
 }
 
