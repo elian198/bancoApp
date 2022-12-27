@@ -1,5 +1,8 @@
 package com.bancoApp.entities;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,6 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "USERS")
+@SQLDelete(sql = "UPDATE employees SET soft_delete=true WHERE id = ?")
+@Where(clause = "soft_delete = false")
 public class User {
 
     @Id
@@ -25,6 +30,8 @@ public class User {
     @Column(name = "PHONE", unique = true)
     private Integer phone;
 
+    @Column(name = "SOFT_DELETE")
+    private Boolean softDelete;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLES",
             joinColumns = {
@@ -101,6 +108,14 @@ public class User {
 
     public void setAccounts(Set<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    public Boolean getSoftDelete() {
+        return softDelete;
+    }
+
+    public void setSoftDelete(Boolean softDelete) {
+        this.softDelete = softDelete;
     }
 
     @Override
