@@ -41,7 +41,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User update(Long id, User user) {
         if(userRepository.existsById(id)){
-           userRepository.save(user);
+         User user1 =   userRepository.findById(id).get();
+         user1.setSoft_delete(false);
+         user1.setName(user.getName());
+         user1.setLastName(user.getLastName());
+         user1.setEmail(user.getEmail());
+         user1.setPhone(user.getPhone());
+           userRepository.save(user1);
         }
         return null;
     }
@@ -109,6 +115,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public List<User> findBySoftDelete() {
+        return userRepository.findBySoftDelete();
+    }
+
+    @Override
+    public User findByIdSoftDelete(Long id) {
+        if(!userRepository.existsById(id)){
+            return null;
+        }
+        return userRepository.findByiDAndsoftDelete(id);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         com.bancoApp.entities.User user = userRepository.findByUserName(username);
 
@@ -126,5 +145,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return  userRepository.findAll();
     }
 
+    public String aleatorio(){
+        String res = "";
+        for(int i = 1; i <=6 ; i++){
+            int num = (int) (Math.random()* (('z'-'a')+1))+'a';
+            char letra = (char)num;
+            res += letra;
+        }
+        return res;
+    }
 
 }

@@ -41,4 +41,9 @@ public class AuthControllers {
         userService.delete(id);
         return ResponseEntity.ok(  "Usuario eliminado");
     }
+
+    @GetMapping("/users/bloqued")
+    public ResponseEntity<List<User>> findBySoftDelete(){
+        return ResponseEntity.ok(  userService.findBySoftDelete());
+    }
 }

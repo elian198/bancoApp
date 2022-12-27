@@ -14,4 +14,7 @@ public interface UserService {
     User findByUserName(String name);
     User findByPhone(Integer phone);
     Optional<User> findById(Long id);
+    List<User> findBySoftDelete();
+    User findByIdSoftDelete(Long id);
+
 }

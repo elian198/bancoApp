@@ -74,6 +74,21 @@ public class UserController {
     }
 
 
+    @PutMapping("/user")
+    public ResponseEntity<?> update(@RequestBody User user){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long id = userService.findByUserName(auth.getName()).getId();
+        if(userService.findByUserName(auth.getName()) == null) {
+            return ResponseEntity.badRequest().body("No esta logueado");
+        }
+        if(userService.findByIdSoftDelete(id) == null){
+           return ResponseEntity.badRequest().body("acceso denegado, Usuario bloqueado!!");
+        }
+
+        userService.update(id, user);
+        return ResponseEntity.ok("Usuario: " + auth.getName() + " Modificado");
+    }
+
 
 
 }
