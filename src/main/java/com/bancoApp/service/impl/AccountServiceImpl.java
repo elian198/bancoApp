@@ -65,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
         }
          User user = userService.findByUserName(name);
 
-                  Long accountpesos = findPesosAccount(user.getIdUser());
+                  Long accountpesos = findPesosAccount(user.getId());
                   Account account = accountRepository.findById(accountpesos).get();
                   Double oldSaldo = account.getSaldo();
                   Account accountSender = accountRepository.findById(idSender).get();
@@ -86,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
               }
 
     public Long findPesosAccount(Long id){
-        for(Account list : userService.findById(id).getAccounts()){
+        for(Account list : userService.findById(id).get().getAccounts()){
             if(list.getAccountType().equals(AccountType.PESOS)){
                 return list.getId();
             }
@@ -95,7 +95,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public Long findDollarAccount(Long id){
-        for(Account list : userService.findById(id).getAccounts()){
+        for(Account list : userService.findById(id).get().getAccounts()){
             if(list.getAccountType().equals(AccountType.DOLLAR)){
                 return list.getId();
             }

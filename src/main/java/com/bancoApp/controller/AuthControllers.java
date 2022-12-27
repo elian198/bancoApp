@@ -36,8 +36,9 @@ public class AuthControllers {
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         if(userService.findById(id) == null){
-            return ResponseEntity.badRequest().body("El id ingresado no se encuentra");
+            return ResponseEntity.badRequest().body("El id ingresado no existe!!!");
         }
-        return ResponseEntity.ok(userService.delete(id) + "Usuario eliminado");
+        userService.delete(id);
+        return ResponseEntity.ok(  "Usuario eliminado");
     }
 }

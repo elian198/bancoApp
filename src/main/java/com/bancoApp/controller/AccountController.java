@@ -55,9 +55,9 @@ public class AccountController {
         }
         User user = userService.findByUserName(auth.getName());
 
-        if(accountService.findById(user.getIdUser()).getAccountType().equals(AccountType.PESOS) && accountService.findById(user.getIdUser()).getSaldo() < transferDto.getSaldo() ){
+        if(accountService.findById(user.getId()).getAccountType().equals(AccountType.PESOS) && accountService.findById(user.getId()).getSaldo() < transferDto.getSaldo() ){
             return ResponseEntity.badRequest().body("NO TIENE SALDO SUFICIENTE!!\n" +
-                    "SALDO ACTUAL: $" +accountService.findById(user.getIdUser()).getSaldo());
+                    "SALDO ACTUAL: $" +accountService.findById(user.getId()).getSaldo());
         }
 
          accountService.transfer(auth.getName(),  transferDto.getIdSender(), transferDto.getSaldo());
@@ -68,14 +68,14 @@ public class AccountController {
         @GetMapping("/transfers")
         public ResponseEntity<List<Transfer>> findById(){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            Long id = userService.findByUserName(auth.getName()).getIdUser();
+            Long id = userService.findByUserName(auth.getName()).getId();
             return   ResponseEntity.ok(transferService.findById(id));
         }
 
     @PostMapping("/transfer/{description}")
     public ResponseEntity<List<Transfer>> findByDescription(@PathVariable String description){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Long id = userService.findByUserName(auth.getName()).getIdUser();
+        Long id = userService.findByUserName(auth.getName()).getId();
         return   ResponseEntity.ok(transferService.findOrderByDescrpiton(id, description));
     }
 
@@ -85,7 +85,7 @@ public class AccountController {
         if(dollar > 100){
             return ResponseEntity.badRequest().body("No se puede comprar mas de u$s100 dollar por dia");
         }
-        Long id = userService.findByUserName(auth.getName()).getIdUser();
+        Long id = userService.findByUserName(auth.getName()).getId();
         accountService.BuyDollar(dollar, id);
         return   ResponseEntity.ok(" La compra de dolar fue realizada");
       }

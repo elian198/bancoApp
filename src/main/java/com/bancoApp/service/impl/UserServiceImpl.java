@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             admin.setDescription(Description.ADMIN);
             roleSet.add(admin);
         }
-
+        user.setSoft_delete(false);
         user.setRoles(roleSet);
         user.setAccounts(accounts);
 
@@ -76,11 +77,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public List<User> delete(Long id) {
-        if(userRepository.existsById(id)){
+    public void delete(Long id) {
             userRepository.deleteById(id);
-        }
-        return  null;
     }
 
     @Override
@@ -103,9 +101,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User findById(Long id) {
-
-        return userRepository.findById(id).get();
+    public Optional<User> findById(Long id) {
+       if(userRepository.existsById(id)) {
+           return userRepository.findByID(id);
+       }
+       return null;
     }
 
     @Override

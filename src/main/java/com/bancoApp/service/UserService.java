@@ -3,14 +3,15 @@ package com.bancoApp.service;
 import com.bancoApp.entities.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
     void save(User user);
     User update(Long id, User user);
-    List<User> delete(Long id);
+    void delete(Long id);
     User findByEmail(String email);
     User findByUserName(String name);
     User findByPhone(Integer phone);
-    User findById(Long id);
+    Optional<User> findById(Long id);
 }
