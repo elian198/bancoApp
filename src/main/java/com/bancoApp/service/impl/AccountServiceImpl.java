@@ -1,5 +1,6 @@
 package com.bancoApp.service.impl;
 
+import com.bancoApp.dto.DollarCotization;
 import com.bancoApp.entities.Account;
 import com.bancoApp.entities.Card;
 import com.bancoApp.entities.Transfer;
@@ -10,7 +11,10 @@ import com.bancoApp.repository.CardRepository;
 import com.bancoApp.repository.TransferRepository;
 import com.bancoApp.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +32,8 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private CardRepository cardRepository;
 
+    @Autowired
+    private RestTemplate restTemplate;
 
     public AccountServiceImpl(AccountRepository accountRepository, TransferRepository transferRepository, UserServiceImpl userService, CardRepository cardRepository) {
         this.accountRepository = accountRepository;
@@ -38,6 +44,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account findById(Long id) {
+
         return accountRepository.findById(id).get();
     }
 
@@ -71,13 +78,12 @@ public class AccountServiceImpl implements AccountService {
                       accountRepository.save(account);
                       Account accountTrans = accountRepository.findById(accountpesos).get();
 
-                     Transfer transfer = new Transfer(accountpesos, accountSender.getId(), saldo,"TRASFERENCIA"
+                     Transfer transfer = new Transfer(accountpesos, accountSender.getId(), saldo,"transferencia"
                               , LocalDateTime.now(),account.getAlias(), accountSender.getAlias(),
                              oldSaldo, accountTrans.getSaldo());
                       transferRepository.save(transfer);
                   }
               }
-
 
     public Long findPesosAccount(Long id){
         for(Account list : userService.findById(id).getAccounts()){
@@ -86,6 +92,46 @@ public class AccountServiceImpl implements AccountService {
             }
         }
         return  null;
+    }
+
+    public Long findDollarAccount(Long id){
+        for(Account list : userService.findById(id).getAccounts()){
+            if(list.getAccountType().equals(AccountType.DOLLAR)){
+                return list.getId();
+            }
+        }
+        return  null;
+    }
+
+    public void BuyDollar(Double dollar, Long id) {
+        if (dollar <= 100 && dollar > 0) {
+            Long idAccount = findDollarAccount(id);
+            Long idAccountPesos = findPesosAccount(id);
+
+            Double saldoDollar = accountRepository.findById(idAccount).get().getSaldo();
+            Double saldoPesos = accountRepository.findById(idAccountPesos).get().getSaldo();
+
+
+            Account account = accountRepository.findById(idAccount).get();
+            Double oldSaldo = account.getSaldo();
+            account.setSaldo(saldoDollar += dollar);
+
+
+            Account accountPesos = accountRepository.findById(idAccountPesos).get();
+            Double oldSaldoPesos = accountPesos.getSaldo();
+            account.setSaldo(saldoPesos -= dollar);
+
+            accountRepository.save(account);
+            accountRepository.save(accountPesos);
+
+            Transfer transfer = new Transfer(findDollarAccount(id) , idAccountPesos, dollar, "COMPRA DOLLAR", LocalDateTime.now(), accountPesos.getAlias(),account.getAlias(), oldSaldo, account.getSaldo() );
+            transferRepository.save(transfer);
+
+
+            ResponseEntity<Object> response = restTemplate.getForEntity("https://www.dolarsi.com/api/api.php?type=valoresprincipales", Object.class);
+            System.out.println(response.getBody());
+        }
+        return;
     }
 }
 

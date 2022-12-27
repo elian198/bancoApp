@@ -69,9 +69,26 @@ public class AccountController {
         public ResponseEntity<List<Transfer>> findById(){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Long id = userService.findByUserName(auth.getName()).getIdUser();
-            System.out.println(" el id es " + id);
             return   ResponseEntity.ok(transferService.findById(id));
         }
+
+    @PostMapping("/transfer/{description}")
+    public ResponseEntity<List<Transfer>> findByDescription(@PathVariable String description){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long id = userService.findByUserName(auth.getName()).getIdUser();
+        return   ResponseEntity.ok(transferService.findOrderByDescrpiton(id, description));
+    }
+
+    @PostMapping("/transfer/buyDollar/{dollar}")
+    public ResponseEntity<?> buyDollar(@PathVariable Double dollar){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(dollar > 100){
+            return ResponseEntity.badRequest().body("No se puede comprar mas de u$s100 dollar por dia");
+        }
+        Long id = userService.findByUserName(auth.getName()).getIdUser();
+        accountService.BuyDollar(dollar, id);
+        return   ResponseEntity.ok(" La compra de dolar fue realizada");
+      }
 
     }
 
