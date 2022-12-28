@@ -47,6 +47,10 @@ public class UserController {
                         loginPayload.getPassword()
                 )
         );
+        Long id = userService.findByUserName(loginPayload.getName()).getId();
+        if(userService.findByIdSoftDelete(id) == null){
+            return ResponseEntity.badRequest().body("acceso denegado, Usuario bloqueado!!");
+        }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtTokenUtil.generateJwtToken(authentication);
         UserDetails  userDetails = (UserDetails) authentication.getPrincipal();

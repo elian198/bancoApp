@@ -43,6 +43,7 @@ public class AccountController {
     public ResponseEntity<?> transfer(@RequestBody TransferDto transferDto){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+
         if(accountService.findById(transferDto.getIdSender()) == null){
             return ResponseEntity.badRequest().body("El id del usuario no existe");
         }
@@ -55,6 +56,10 @@ public class AccountController {
         }
         User user = userService.findByUserName(auth.getName());
 
+        if(userService.findByIdSoftDelete(user.getId()) == null){
+            return ResponseEntity.badRequest().body("Acceso denegado, su cuenta esta bloqueada!!");
+        }
+
         if(accountService.findById(user.getId()).getAccountType().equals(AccountType.PESOS) && accountService.findById(user.getId()).getSaldo() < transferDto.getSaldo() ){
             return ResponseEntity.badRequest().body("NO TIENE SALDO SUFICIENTE!!\n" +
                     "SALDO ACTUAL: $" +accountService.findById(user.getId()).getSaldo());
@@ -66,9 +71,12 @@ public class AccountController {
 
 
         @GetMapping("/transfers")
-        public ResponseEntity<List<Transfer>> findById(){
+        public ResponseEntity<?> findById(){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Long id = userService.findByUserName(auth.getName()).getId();
+            if(userService.findByIdSoftDelete(id) == null){
+                return ResponseEntity.badRequest().body("Acceso denegado, Usuario bloqueado!!");
+            }
             return   ResponseEntity.ok(transferService.findById(id));
         }
 
@@ -86,6 +94,9 @@ public class AccountController {
             return ResponseEntity.badRequest().body("No se puede comprar mas de u$s100 dollar por dia");
         }
         Long id = userService.findByUserName(auth.getName()).getId();
+        if(userService.findByIdSoftDelete(id) == null){
+            return ResponseEntity.badRequest().body("Acceso denegado, Usuario bloqueado!!");
+        }
         accountService.BuyDollar(dollar, id);
         return   ResponseEntity.ok(" La compra de dolar fue realizada");
       }
