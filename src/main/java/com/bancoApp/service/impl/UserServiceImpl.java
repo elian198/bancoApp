@@ -121,9 +121,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User findByIdSoftDelete(Long id) {
-        if(!userRepository.existsById(id)){
-            return null;
-        }
         return userRepository.findByiDAndsoftDelete(id);
     }
 
@@ -154,5 +151,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
         return res;
     }
+
+    public void unLockById(Long id){
+        if(userRepository.findByiDAndsoftDelete(id) != null) {
+            User user = userRepository.findByID(id).get();
+            user.setSoft_delete(false);
+            userRepository.save(user);
+        }
+    }
+
 
 }

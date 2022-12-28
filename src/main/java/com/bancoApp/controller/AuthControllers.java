@@ -3,6 +3,7 @@ package com.bancoApp.controller;
 import com.bancoApp.entities.User;
 import com.bancoApp.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,5 +46,14 @@ public class AuthControllers {
     @GetMapping("/users/bloqued")
     public ResponseEntity<List<User>> findBySoftDelete(){
         return ResponseEntity.ok(  userService.findBySoftDelete());
+    }
+
+    @PostMapping("/users/unlock/{id}")
+    public ResponseEntity<?> unlockById(@PathVariable Long id){
+        if(userService.findByIdSoftDelete(id)== null){
+            return ResponseEntity.badRequest().body("El id no existe!!");
+        }
+        userService.unLockById(id);
+        return ResponseEntity.ok("Usuario desbloqueado");
     }
 }

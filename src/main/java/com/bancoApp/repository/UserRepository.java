@@ -25,6 +25,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM users WHERE users.soft_delete = true" ,nativeQuery = true)
     List<User> findBySoftDelete();
 
-    @Query(value = "SELECT * FROM users WHERE users.soft_delete = false AND users.id = :filtro" ,nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE users.soft_delete = true AND users.id = :filtro" ,nativeQuery = true)
     User findByiDAndsoftDelete(@Param("filtro") Long id);
+
+
 }
