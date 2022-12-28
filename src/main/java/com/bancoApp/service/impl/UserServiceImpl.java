@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -40,7 +41,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User update(Long id, User user) {
         if(userRepository.existsById(id)){
-           userRepository.save(user);
+         User user1 =   userRepository.findById(id).get();
+         user1.setSoft_delete(false);
+         user1.setName(user.getName());
+         user1.setLastName(user.getLastName());
+         user1.setEmail(user.getEmail());
+         user1.setPhone(user.getPhone());
+           userRepository.save(user1);
         }
         return null;
     }
@@ -67,7 +74,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             admin.setDescription(Description.ADMIN);
             roleSet.add(admin);
         }
-
+        user.setSoft_delete(false);
         user.setRoles(roleSet);
         user.setAccounts(accounts);
 
@@ -76,11 +83,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public List<User> delete(Long id) {
-        if(userRepository.existsById(id)){
+    public void delete(Long id) {
             userRepository.deleteById(id);
-        }
-        return  null;
     }
 
     @Override
@@ -103,9 +107,21 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User findById(Long id) {
+    public Optional<User> findById(Long id) {
+       if(userRepository.existsById(id)) {
+           return userRepository.findByID(id);
+       }
+       return null;
+    }
 
-        return userRepository.findById(id).get();
+    @Override
+    public List<User> findBySoftDelete() {
+        return userRepository.findBySoftDelete();
+    }
+
+    @Override
+    public User findByIdSoftDelete(Long id) {
+        return userRepository.findByiDAndsoftDelete(id);
     }
 
     @Override
@@ -124,6 +140,24 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
     public List<User> findAll(){
         return  userRepository.findAll();
+    }
+
+    public String aleatorio(){
+        String res = "";
+        for(int i = 1; i <=6 ; i++){
+            int num = (int) (Math.random()* (('z'-'a')+1))+'a';
+            char letra = (char)num;
+            res += letra;
+        }
+        return res;
+    }
+
+    public void unLockById(Long id){
+        if(userRepository.findByiDAndsoftDelete(id) != null) {
+            User user = userRepository.findByID(id).get();
+            user.setSoft_delete(false);
+            userRepository.save(user);
+        }
     }
 
 

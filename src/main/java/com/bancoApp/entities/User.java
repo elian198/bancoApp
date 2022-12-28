@@ -4,20 +4,19 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "USERS")
-@SQLDelete(sql = "UPDATE employees SET soft_delete=true WHERE id = ?")
+@SQLDelete(sql = "UPDATE users SET soft_delete=true WHERE id = ?")
 @Where(clause = "soft_delete = false")
+
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idUser;
+    private Long id;
 
     private String name;
     private String lastName;
@@ -30,8 +29,10 @@ public class User {
     @Column(name = "PHONE", unique = true)
     private Integer phone;
 
-    @Column(name = "SOFT_DELETE")
-    private Boolean softDelete;
+    @Column( name = "SOFT_DELETE")
+    private Boolean soft_delete;
+
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLES",
             joinColumns = {
@@ -46,12 +47,12 @@ public class User {
 
     public User() { }
 
-    public Long getIdUser() {
-        return idUser;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdUser(Long idUser) {
-        this.idUser = idUser;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -72,6 +73,14 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public Boolean getSoft_delete() {
+        return soft_delete;
+    }
+
+    public void setSoft_delete(Boolean soft_delete) {
+        this.soft_delete = soft_delete;
     }
 
     public void setEmail(String email) {
@@ -110,20 +119,14 @@ public class User {
         this.accounts = accounts;
     }
 
-    public Boolean getSoftDelete() {
-        return softDelete;
-    }
-
-    public void setSoftDelete(Boolean softDelete) {
-        this.softDelete = softDelete;
-    }
 
     @Override
     public String toString() {
         return "User{" +
-                "idUser=" + idUser +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", phone=" + phone +
                 ", roles=" + roles +
