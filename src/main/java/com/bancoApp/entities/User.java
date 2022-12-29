@@ -26,8 +26,11 @@ public class User {
     @Column(name = "EMAIL" , unique = true)
     private String email;
 
-    @Column(name = "PHONE", unique = true)
+    @Column(name = "PHONE", unique = true , length = 12)
     private Integer phone;
+
+    @Column(name = "CUIT", unique = true, length = 11)
+    private String cuit;
 
     @Column( name = "SOFT_DELETE")
     private Boolean soft_delete;
@@ -119,6 +122,13 @@ public class User {
         this.accounts = accounts;
     }
 
+    public String getCuit() {
+        return cuit;
+    }
+
+    public void setCuit(String cuit) {
+        this.cuit = cuit;
+    }
 
     @Override
     public String toString() {
@@ -129,6 +139,8 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", phone=" + phone +
+                ", cuit='" + cuit + '\'' +
+                ", soft_delete=" + soft_delete +
                 ", roles=" + roles +
                 ", accounts=" + accounts +
                 '}';

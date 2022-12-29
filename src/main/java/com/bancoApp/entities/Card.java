@@ -5,6 +5,7 @@ import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,21 +21,20 @@ public class Card {
     @Column(name = "CARD_TYPE")
     private CardType cardType;
 
-    @Column(name = "CARD_NUMBER")
+    @Column(name = "CARD_NUMBER", unique = true, length = 20)
     private String cardNumber;
 
     @Column(name = "Date_Time")
-    private LocalDate localDate;
+    private LocalDateTime localDate;
 
+    @Column(name = "EXPIRATION_DATE")
+    private LocalDate expirationDate;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "CARD_PAYMENT",
-            joinColumns = {
-                    @JoinColumn(name = "CARD_ID")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "PAYMENT_ID") })
-    private Set<Payment> payments = new HashSet<>();
+    @Column(name = "LIMIT")
+    private Double limit = 200000.0;
+
+    @OneToMany(cascade = {CascadeType.ALL},mappedBy="card")
+    private  Set<Payment> payments =new HashSet();
     public Card() { }
 
     public Long getId() {
@@ -61,11 +61,20 @@ public class Card {
         this.cardNumber = cardNumber;
     }
 
-    public LocalDate getLocalDate() {
+
+    public LocalDateTime getLocalDate() {
         return localDate;
     }
 
-    public void setLocalDate(LocalDate localDate) {
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public void setLocalDate(LocalDateTime localDate) {
         this.localDate = localDate;
     }
 
@@ -77,6 +86,14 @@ public class Card {
         this.payments = payments;
     }
 
+    public Double getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Double limit) {
+        this.limit = limit;
+    }
+
     @Override
     public String toString() {
         return "Card{" +
@@ -84,6 +101,8 @@ public class Card {
                 ", cardType=" + cardType +
                 ", cardNumber='" + cardNumber + '\'' +
                 ", localDate=" + localDate +
+                ", expirationDate=" + expirationDate +
+                ", limit=" + limit +
                 ", payments=" + payments +
                 '}';
     }
