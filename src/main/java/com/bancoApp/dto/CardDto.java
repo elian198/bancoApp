@@ -14,6 +14,8 @@ public class CardDto {
     private LocalDateTime localDate;
     private LocalDate expirarionDate;
 
+
+
     public CardDto() { }
 
     public CardDto(Long id, CardType cardType, String cardNumber, LocalDateTime localDate, LocalDate expirarionDate) {

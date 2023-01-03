@@ -15,7 +15,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ALIAS")
+    @Column(name = "ALIAS", unique = true)
     private String alias;
 
     @Column(name = "SALDO")
@@ -27,11 +27,12 @@ public class Account {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "ACCOUNT_CARD",
             joinColumns = {
-                    @JoinColumn(name = "ID")
+                    @JoinColumn(name = "ACCOUNT_ID")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "CARD_ID") })
+                    @JoinColumn(name = "ID_CARD") })
     private Set<Card> cards = new HashSet<>();
+
 
     @JsonIgnore
     @ManyToOne
@@ -102,8 +103,6 @@ public class Account {
                 ", alias='" + alias + '\'' +
                 ", saldo=" + saldo +
                 ", accountType=" + accountType +
-                ", cards=" + cards +
-                ", user=" + user +
                 '}';
     }
 }

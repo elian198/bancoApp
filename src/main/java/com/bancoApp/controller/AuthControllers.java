@@ -1,6 +1,9 @@
 package com.bancoApp.controller;
 
+import com.bancoApp.dto.CardDto;
+import com.bancoApp.entities.Card;
 import com.bancoApp.entities.User;
+import com.bancoApp.service.impl.CardServiceImpl;
 import com.bancoApp.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -16,8 +19,12 @@ public class AuthControllers {
     @Autowired
     private UserServiceImpl userService;
 
-    public AuthControllers(UserServiceImpl userService) {
+    @Autowired
+    private CardServiceImpl cardService;
+
+    public AuthControllers(UserServiceImpl userService, CardServiceImpl cardService) {
         this.userService = userService;
+        this.cardService = cardService;
     }
 
     @GetMapping("/users")
@@ -56,4 +63,11 @@ public class AuthControllers {
         userService.unLockById(id);
         return ResponseEntity.ok("Usuario desbloqueado");
     }
+
+    @GetMapping("/users/cards")
+    public ResponseEntity<List<Card>> orderByDate(){
+
+        return ResponseEntity.ok( cardService.orderByExpirationDate() );
+    }
+
 }

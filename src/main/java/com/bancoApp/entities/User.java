@@ -48,6 +48,11 @@ public class User {
     @OneToMany(cascade = {CascadeType.ALL},mappedBy="user")
     private  Set<Account> accounts =new HashSet();
 
+    @OneToMany(cascade = {CascadeType.ALL},mappedBy="userDollar")
+    private  Set<AccountDollar> accountsDollar =new HashSet();
+
+    @OneToMany(cascade = {CascadeType.ALL},mappedBy="user")
+    private  Set<FixedTerm> fixedTerms =new HashSet();
     public User() { }
 
     public Long getId() {
@@ -130,6 +135,22 @@ public class User {
         this.cuit = cuit;
     }
 
+    public Set<AccountDollar> getAccountsDollar() {
+        return accountsDollar;
+    }
+
+    public Set<FixedTerm> getFixedTerms() {
+        return fixedTerms;
+    }
+
+    public void setFixedTerms(Set<FixedTerm> fixedTerms) {
+        this.fixedTerms = fixedTerms;
+    }
+
+    public void setAccountsDollar(Set<AccountDollar> accountsDollar) {
+        this.accountsDollar = accountsDollar;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -143,6 +164,7 @@ public class User {
                 ", soft_delete=" + soft_delete +
                 ", roles=" + roles +
                 ", accounts=" + accounts +
+                ", accountsDollar=" + accountsDollar +
                 '}';
     }
 }

@@ -48,7 +48,7 @@ public class UserController {
                 )
         );
         Long id = userService.findByUserName(loginPayload.getName()).getId();
-        if(userService.findByIdSoftDelete(id) == null){
+        if(userService.findByIdSoftDelete(id) != null){
             return ResponseEntity.badRequest().body("acceso denegado, Usuario bloqueado!!");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -70,6 +70,10 @@ public class UserController {
             return ResponseEntity.badRequest().body("El telefono ya existe!!");
         }
 
+        if(userService.existCuit(user.getCuit())){
+            return ResponseEntity.badRequest().body("El CUIT ingresado ya existe!!");
+        }
+
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
         userService.save(user);
@@ -85,7 +89,7 @@ public class UserController {
         if(userService.findByUserName(auth.getName()) == null) {
             return ResponseEntity.badRequest().body("No esta logueado");
         }
-        if(userService.findByIdSoftDelete(id) == null){
+        if(userService.findByIdSoftDelete(id) != null){
            return ResponseEntity.badRequest().body("acceso denegado, Usuario bloqueado!!");
         }
 

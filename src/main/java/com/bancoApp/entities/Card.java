@@ -1,6 +1,8 @@
 package com.bancoApp.entities;
 
 import com.bancoApp.entities.enums.CardType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
@@ -21,7 +23,7 @@ public class Card {
     @Column(name = "CARD_TYPE")
     private CardType cardType;
 
-    @Column(name = "CARD_NUMBER", unique = true, length = 20)
+    @Column(name = "CARD_NUMBER", length = 20)
     private String cardNumber;
 
     @Column(name = "Date_Time")
@@ -30,11 +32,12 @@ public class Card {
     @Column(name = "EXPIRATION_DATE")
     private LocalDate expirationDate;
 
-    @Column(name = "LIMIT")
-    private Double limit = 200000.0;
+    @Column(name = "LIMIT_BALANCE")
+    private Double limit = 100000.0;
+
 
     @OneToMany(cascade = {CascadeType.ALL},mappedBy="card")
-    private  Set<Payment> payments =new HashSet();
+    private Set<Payment> payments = new HashSet<>();
     public Card() { }
 
     public Long getId() {
@@ -85,6 +88,7 @@ public class Card {
     public void setPayments(Set<Payment> payments) {
         this.payments = payments;
     }
+
 
     public Double getLimit() {
         return limit;

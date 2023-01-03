@@ -58,6 +58,12 @@
 			<version>0.9.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.github.cliftonlabs</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
