@@ -59,28 +59,32 @@ public class AccountController {
 
     @PostMapping("/transfer")
     public ResponseEntity<?> transfer(@RequestBody TransferDto transferDto) {
+      FixedTerm fixedTerm =  fixedReository.findByUserId(date().getId());
+        if(fixedTerm != null){
+            if (fixedTerm.getState() == true) {
+                return ResponseEntity.badRequest().body("Usted tiene un plazo fijo no pueder utilizar el dinero hasta el dia: " + fixedTerm.getLocalDate().plusDays(30));
+            }
+            if (accountService.findById(transferDto.getIdSender()) == null) {
+                return ResponseEntity.badRequest().body("El id del usuario no existe");
+            }
 
-        if (accountService.findById(transferDto.getIdSender()) == null) {
-            return ResponseEntity.badRequest().body("El id del usuario no existe");
-        }
+            if (accountService.findById(transferDto.getIdSender()) == null) {
+                return ResponseEntity.badRequest().body("ERROR EL ID DE LA CUENTA NO EXISTE!!");
+            }
+            if (transferDto.getSaldo() < 1 || transferDto.getSaldo() > 10000) {
+                return ResponseEntity.badRequest().body("EL SALDO TIENE QUE SER MAYOR A $0\nNO PUEDE SER MAYOR A $10000");
+            }
 
-        if (accountService.findById(transferDto.getIdSender()) == null) {
-            return ResponseEntity.badRequest().body("ERROR EL ID DE LA CUENTA NO EXISTE!!");
-        }
-        if (transferDto.getSaldo() < 1 || transferDto.getSaldo() > 10000) {
-            return ResponseEntity.badRequest().body("EL SALDO TIENE QUE SER MAYOR A $0\nNO PUEDE SER MAYOR A $10000");
-        }
-        User user = userService.findByUserName(date().getName());
 
-        if (userService.findByIdSoftDelete(user.getId()) == null) {
-            return ResponseEntity.badRequest().body("Acceso denegado, su cuenta esta bloqueada!!");
-        }
+            if (userService.findByIdSoftDelete(date().getId()).getSoft_delete() == true) {
+                return ResponseEntity.badRequest().body("Acceso denegado, su cuenta esta bloqueada!!");
+            }
 
-        if (accountService.findById(user.getId()).getAccountType().equals(AccountType.PESOS) && accountService.findById(user.getId()).getSaldo() < transferDto.getSaldo()) {
-            return ResponseEntity.badRequest().body("NO TIENE SALDO SUFICIENTE!!\n" +
-                    "SALDO ACTUAL: $" + accountService.findById(user.getId()).getSaldo());
+            if (accountService.findById(date().getId()).getAccountType().equals(AccountType.PESOS) && accountService.findById(date().getId()).getSaldo() < transferDto.getSaldo()) {
+                return ResponseEntity.badRequest().body("NO TIENE SALDO SUFICIENTE!!\n" +
+                        "SALDO ACTUAL: $" + accountService.findById(date().getId()).getSaldo());
+            }
         }
-
         accountService.transfer(date().getName(), transferDto.getIdSender(), transferDto.getSaldo());
         return ResponseEntity.ok("Transferencia realizada con exito");
     }
@@ -104,7 +108,6 @@ public class AccountController {
             return ResponseEntity.badRequest().body("No se puede comprar mas de u$s100 dollar por dia");
         }
         if ( accountDollarService.buyByDay(dollar) > 100){
-            System.out.println( accountDollarService.buyByDay(dollar));
             return ResponseEntity.badRequest().body("No se puede comprar mas de u$s100 dollar por dia");
         }
 
