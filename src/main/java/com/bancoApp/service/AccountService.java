@@ -6,6 +6,6 @@ import com.bancoApp.entities.Card;
 public interface AccountService {
 
     Account findById(Long id);
-    void addCard(Long idAccount, Card card);
+    Boolean addCard(Long idAccount, Card card);
     void transfer(String name, Long idSerder, double saldo);
 }

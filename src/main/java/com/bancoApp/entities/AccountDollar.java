@@ -1,15 +1,13 @@
 package com.bancoApp.entities;
 
+
 import com.bancoApp.entities.enums.AccountType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
-@Table(name = "ACCOUNTS")
-public class Account {
+@Table(name = "ACCOUNTDOLLARS")
+public class AccountDollar  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,27 +22,17 @@ public class Account {
     @Column(name = "ACCOUNT_TYPE")
     private AccountType accountType;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "ACCOUNT_CARD",
-            joinColumns = {
-                    @JoinColumn(name = "ACCOUNT_ID")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "ID_CARD") })
-    private Set<Card> cards = new HashSet<>();
-
-
     @JsonIgnore
     @ManyToOne
-    private User user;
+    private User userDollar;
 
-    public Account() { }
+    public AccountDollar() { }
 
 
-    public Account(AccountType accountType, User user) {
+    public AccountDollar(AccountType accountType, User user) {
 
         this.accountType = accountType;
-        this.user = user;
+        this.userDollar = user;
     }
 
     public Long getId() {
@@ -64,12 +52,13 @@ public class Account {
         this.accountType = accountType;
     }
 
-    public User getUser() {
-        return user;
+
+    public User getUserDollar() {
+        return userDollar;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserDollar(User userDollar) {
+        this.userDollar = userDollar;
     }
 
     public String getAlias() {
@@ -84,21 +73,13 @@ public class Account {
         return saldo;
     }
 
-    public Set<Card> getCards() {
-        return cards;
-    }
-
-    public void setCards(Set<Card> cards) {
-        this.cards = cards;
-    }
-
     public void setSaldo(Double saldo) {
         this.saldo = saldo;
     }
 
     @Override
     public String toString() {
-        return "Account{" +
+        return "AccountDollar{" +
                 "id=" + id +
                 ", alias='" + alias + '\'' +
                 ", saldo=" + saldo +

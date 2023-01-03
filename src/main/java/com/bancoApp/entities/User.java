@@ -26,8 +26,11 @@ public class User {
     @Column(name = "EMAIL" , unique = true)
     private String email;
 
-    @Column(name = "PHONE", unique = true)
+    @Column(name = "PHONE", unique = true , length = 12)
     private Integer phone;
+
+    @Column(name = "CUIT", unique = true, length = 11)
+    private String cuit;
 
     @Column( name = "SOFT_DELETE")
     private Boolean soft_delete;
@@ -45,6 +48,11 @@ public class User {
     @OneToMany(cascade = {CascadeType.ALL},mappedBy="user")
     private  Set<Account> accounts =new HashSet();
 
+    @OneToMany(cascade = {CascadeType.ALL},mappedBy="userDollar")
+    private  Set<AccountDollar> accountsDollar =new HashSet();
+
+    @OneToMany(cascade = {CascadeType.ALL},mappedBy="user")
+    private  Set<FixedTerm> fixedTerms =new HashSet();
     public User() { }
 
     public Long getId() {
@@ -119,6 +127,29 @@ public class User {
         this.accounts = accounts;
     }
 
+    public String getCuit() {
+        return cuit;
+    }
+
+    public void setCuit(String cuit) {
+        this.cuit = cuit;
+    }
+
+    public Set<AccountDollar> getAccountsDollar() {
+        return accountsDollar;
+    }
+
+    public Set<FixedTerm> getFixedTerms() {
+        return fixedTerms;
+    }
+
+    public void setFixedTerms(Set<FixedTerm> fixedTerms) {
+        this.fixedTerms = fixedTerms;
+    }
+
+    public void setAccountsDollar(Set<AccountDollar> accountsDollar) {
+        this.accountsDollar = accountsDollar;
+    }
 
     @Override
     public String toString() {
@@ -129,8 +160,11 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", phone=" + phone +
+                ", cuit='" + cuit + '\'' +
+                ", soft_delete=" + soft_delete +
                 ", roles=" + roles +
                 ", accounts=" + accounts +
+                ", accountsDollar=" + accountsDollar +
                 '}';
     }
 }

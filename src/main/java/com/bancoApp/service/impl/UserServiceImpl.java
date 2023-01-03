@@ -1,6 +1,7 @@
 package com.bancoApp.service.impl;
 
 import com.bancoApp.entities.Account;
+import com.bancoApp.entities.AccountDollar;
 import com.bancoApp.entities.Role;
 import com.bancoApp.entities.User;
 import com.bancoApp.entities.enums.AccountType;
@@ -61,13 +62,18 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         roleSet.add(role);
 
         Set<Account> accounts = new HashSet<>();
+        Set<AccountDollar> accountDollar = new HashSet<>();
+
         Account pesos = new Account(AccountType.PESOS, user);
-        Account dollar = new Account(AccountType.DOLLAR, user);
+        AccountDollar dollar = new AccountDollar(AccountType.DOLLAR, user);
         pesos.setAlias(user.getName() + "." + user.getLastName());
-        pesos.setSaldo(10000.0);
+        pesos.setSaldo(100000.0);
+        pesos.setUser(user);
+
         dollar.setSaldo(200.0);
+        dollar.setUserDollar(user);
         accounts.add(pesos);
-        accounts.add(dollar);
+        accountDollar.add(dollar);
 
         if (user.getEmail().split("@")[1].equals("admin.edu")) {
             Role admin = new Role();
@@ -77,6 +83,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         user.setSoft_delete(false);
         user.setRoles(roleSet);
         user.setAccounts(accounts);
+        user.setAccountsDollar(accountDollar);
 
      userRepository.save(user);
 
@@ -89,7 +96,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User findByEmail(String email) {
-        System.out.println(userRepository.findByEmail(email));
         return userRepository.findByEmail(email);
     }
 
@@ -158,6 +164,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             user.setSoft_delete(false);
             userRepository.save(user);
         }
+    }
+
+    public Boolean existCuit(String cuit){
+       if(userRepository.findByCuit(cuit) != null){
+           return true;
+        }
+       return false;
     }
 
 

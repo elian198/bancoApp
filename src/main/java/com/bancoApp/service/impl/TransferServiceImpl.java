@@ -24,7 +24,7 @@ public class TransferServiceImpl implements TrasferService {
 
     @Override
     public List<Transfer> findById(Long id) {
-        Long idAccount = accountService.findPesosAccount(id);
+        Long idAccount = accountService.findById(id).getId();
         return transferRepository.findById(idAccount, idAccount);
     }
 
